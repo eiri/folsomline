@@ -1,0 +1,18 @@
+{application, folsomline, [
+  {description, "Missing persistence for folsom"},
+  {vsn, "0.1"},
+  {modules, [
+    folsomline,
+    folsomline_worker
+  ]},
+  {registered, [folsomline]},
+  {applications, [
+    kernel,
+    stdlib,
+    lager,
+    crypto,
+    folsom
+  ]},
+  {mod, {folsomline, []}},
+  {env, []}
+]}.
