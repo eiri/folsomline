@@ -2,29 +2,67 @@
 
 -behaviour(gen_server).
 
--export([start_link/0]).
+-export([start_link/0, read/0]).
 -export([init/1, handle_call/3, handle_cast/2,
           handle_info/2, terminate/2, code_change/3]).
 
--record(ctx, {file}).
+-record(ctx, {tref, file}).
+-define(LOG, folsom).
+-define(INTERVAL, 1000).
 
 start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
+read() ->
+  read(start, []).
+
 init([]) ->
-  {ok, #ctx{}}.
+  {ok, File} = application:get_env(folsomline, dbfile),
+  {file, Beam} = code:is_loaded(?MODULE),
+  FileName = filename:join([filename:dirname(Beam), "..", File]),
+  Open = disk_log:open([{name, ?LOG}, {file, FileName}]),
+  lager:debug("Opened ~s  ~p", [FileName, Open]),
+  process_flag(trap_exit, true),
+  {_,_,S} = erlang:time(),
+  lager:debug("Starting clock in ~b sec.", [60 - S]),
+  {ok, TRef} = timer:send_after(timer:seconds(60 - S), start),
+  {ok, #ctx{tref= TRef, file = FileName}}.
 
 handle_call(_, _, Ctx) ->
-  {reply, ok, Ctx}.
+  {stop, unknown_call, Ctx}.
 
 handle_cast(_, Ctx) ->
-  {noreply, Ctx}.
+  {stop, unknown_call, Ctx}.
 
-handle_info(_, Ctx) ->
+handle_info(store, Ctx) ->
+  Time = erlang:time(),
+  Keys = folsom_metrics:get_metrics(),
+  Data = [{K, folsom_metrics:get_metric_value(K)} || K <- Keys],
+  disk_log:log(?LOG, [{time, Time}|Data]),
+  {noreply, Ctx};
+handle_info(start, Ctx) ->
+  lager:debug("Clock started"),
+  {ok, TRef} = timer:send_interval(?INTERVAL, store),
+  {noreply, Ctx#ctx{tref = TRef}};
+handle_info({'EXIT', _, normal}, Ctx) ->
   {noreply, Ctx}.
 
 terminate(_Reason, _Ctx) ->
-  ok.
+  disk_log:close(?LOG).
 
 code_change(_OldVsn, Ctx, _Extra) ->
   {ok, Ctx}.
+
+%% priv
+
+read(Cont, Acc) ->
+  case disk_log:chunk(?LOG, Cont) of
+    eof ->
+      {ok, Acc};
+    {error, Error} ->
+      {error, Error};
+    {Cont2, T} ->
+      read(Cont2, T ++ Acc);
+    {Cont2, T, _} ->
+      read(Cont2, T ++ Acc)
+  end.

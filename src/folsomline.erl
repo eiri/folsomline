@@ -14,7 +14,7 @@
 -define(WORKER(M), {M, {M, start_link, []}, permanent, 2000, worker, [M]}).
 
 %% pub API
--export([]).
+-export([read/0]).
 
 %% behaviours callbacks
 -export([start/0, stop/0, start/2, stop/1, init/1]).
@@ -22,6 +22,11 @@
 %%
 %% API
 %%
+
+%% @doc Reads all stored and timestamped metrics
+-spec read() -> {ok, Metrics::list()} | {error, Error::term()}.
+read() ->
+  folsomline_worker:read().
 
 %% app/sup start/stop
 
