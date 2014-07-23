@@ -8,7 +8,6 @@
 
 -record(ctx, {tref, file}).
 -define(LOG, folsom).
--define(INTERVAL, 1000).
 
 start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
@@ -42,7 +41,8 @@ handle_info(store, Ctx) ->
   {noreply, Ctx};
 handle_info(start, Ctx) ->
   lager:debug("Clock started"),
-  {ok, TRef} = timer:send_interval(?INTERVAL, store),
+  {ok, Interval} = application:get_env(folsomline, interval),
+  {ok, TRef} = timer:send_interval(Interval, store),
   {noreply, Ctx#ctx{tref = TRef}};
 handle_info({'EXIT', _, normal}, Ctx) ->
   {noreply, Ctx}.

@@ -14,5 +14,5 @@
     folsom
   ]},
   {mod, {folsomline, []}},
-  {env, [{dbfile, "log/folsom.db"}]}
+  {env, [{dbfile, "log/folsom.db"}, {interval, 60000}]}
 ]}.
