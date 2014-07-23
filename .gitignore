@@ -6,3 +6,4 @@ log
 doc
 *.beam
 *.dump
+src/fticker.erl
