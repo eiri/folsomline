@@ -1,11 +1,11 @@
 {application, folsomline, [
   {description, "Missing persistence for folsom"},
-  {vsn, "0.1"},
+  {vsn, "0.1.0"},
   {modules, [
     folsomline,
     folsomline_worker
   ]},
-  {registered, [folsomline]},
+  {registered, [folsomline, folsomline_worker]},
   {applications, [
     kernel,
     stdlib,
@@ -14,5 +14,5 @@
     folsom
   ]},
   {mod, {folsomline, []}},
-  {env, []}
+  {env, [{dbfile, "log/folsom.db"}]}
 ]}.
