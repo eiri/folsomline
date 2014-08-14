@@ -1,9 +1,7 @@
 .DS_Store
 .eunit
+*.dump
+.rebar
 ebin
 deps
 log
-doc
-*.beam
-*.dump
-src/fticker.erl

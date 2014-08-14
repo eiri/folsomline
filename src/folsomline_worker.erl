@@ -17,15 +17,17 @@ read() ->
 
 init([]) ->
   {ok, File} = application:get_env(folsomline, dbfile),
-  {file, Beam} = code:is_loaded(?MODULE),
-  FileName = filename:join([filename:dirname(Beam), "..", File]),
-  Open = disk_log:open([{name, ?LOG}, {file, FileName}]),
-  lager:debug("Opened ~s  ~p", [FileName, Open]),
+  case disk_log:open([{name, ?LOG}, {file, File}]) of
+    {ok, ?LOG} ->
+      lager:debug("Opened ~s", [File]);
+    {repaired,?LOG,_,_} ->
+      lager:debug("Repaired ~s", [File])
+  end,
   process_flag(trap_exit, true),
   {_,_,S} = erlang:time(),
   lager:debug("Starting clock in ~b sec.", [60 - S]),
   {ok, TRef} = timer:send_after(timer:seconds(60 - S), start),
-  {ok, #ctx{tref= TRef, file = FileName}}.
+  {ok, #ctx{tref= TRef, file = File}}.
 
 handle_call(_, _, Ctx) ->
   {stop, unknown_call, Ctx}.
