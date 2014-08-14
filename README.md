@@ -4,7 +4,7 @@
 
 ## Synopsis
 
-[Folsom](https://github.com/boundary/folsom) is Erlang metrics aggregator from Boundary. It's a perfect tool for realtime metrics collection and simple statistical analysis, but I was missing persistence layer that'd allow me to follow the *dynamics* of the changes. So I wrote Folsomline.
+[Folsom](https://github.com/boundary/folsom) is Erlang metrics aggregator from Boundary. It's a perfect tool for a realtime metrics collection and simple statistical analysis, but I was missing persistence layer that'd allow me to follow the *dynamics* of the changes. So I wrote Folsomline.
 
 ## Installation
 
@@ -29,32 +29,32 @@ dep_folsomline = https://github.com/eiri/folsomline.git master
 
 ## Usage
 
-Start folsomline as `application:start(folsomline)` and just store metrics with folsom as usual. Folsomline running in background, storing all the registered metrics every minute (by default).
+Start folsomline as `application:start(folsomline)` and just store folsom metrics as usually. Folsomline is running on a background, storing all the the registered metrics every minute (by default).
 
-To get history just run `folsomline:read().`
+To get the history run `folsomline:read().`
 
 ## Configuration
 
 Default storing interval is one minute. Default storage file kept in local _log_ directory as _folsom.db_
 
-Configuration could be changed by specifying parameters _file_ and _interval_ in application's config file, i.e.:
+Configuration could be changed by specifying parameters _dbfile_ and _interval_ in application's config file under _folsomline_ term, e.g.:
 
 ```erlang
 {folsomline, [
-  {file, RelativePath/FileName},
-  {interval, Microseconds}
+  {dbfile, "logs/stats.log"},
+  {interval, 180000}
 ]},
 
 ```
 
 ## Notes
 
-   - Folsomline starts to record metrics not immediately on a start but from a first second of a next minute.
-   - Folsomline by any mean not a monitoring solution. If you need a complete EVM monitoring check out [Folsomite](https://github.com/campanja/folsomite), though I haven't tried it myself.
+  - Folsomline starts to record the metrics not immediately on a startm but from a first second of a next minute.
+  - Folsomlineis not a complete monitoring solutions by any means. If you need a proper EVM monitoring check out [Folsomite](https://github.com/campanja/folsomite), though I myself haven't tried it.
 
 ## Changelog
 
-   - 0.1.0 - Initial naive version.
+  - 0.1.0 - Initial naive version.
 
 ## License
 
