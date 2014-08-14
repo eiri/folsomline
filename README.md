@@ -14,7 +14,7 @@ Include the following in your rebar config's deps section:
 
 ```erlang
 {deps, [
-  {folsomline, "0.1.1", {git, "git://github.com/eiri/folsomline.git"}}
+  {folsomline, "0.1.2", {git, "git://github.com/eiri/folsomline.git"}}
 ]}
 ```
 ### With [erlang.mk](https://github.com/extend/erlang.mk)
@@ -24,7 +24,7 @@ Include the following in your `Makefile`
 ```Make
 DEPS = folsomline
 
-dep_folsomline = https://github.com/eiri/folsomline.git 0.1.1
+dep_folsomline = https://github.com/eiri/folsomline.git 0.1.2
 ```
 
 ## Usage
@@ -56,6 +56,7 @@ Configuration could be changed by specifying parameters _dbfile_ and _interval_ 
 
 ## Changelog
 
+  - 0.1.2 - Removed dependency on lager.
   - 0.1.1 - Example app. Fixes on storage and re-openening of the metrics file.
   - 0.1.0 - Initial naive version.
 
