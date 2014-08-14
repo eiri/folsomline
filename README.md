@@ -10,38 +10,40 @@
 
 ### With [rebar](https://github.com/basho/rebar)
 
-Include the following in rebar config's deps section:
+Include the following in your rebar config's deps section:
 
 ```erlang
 {deps, [
-  {'folsomline', '.*', {git, "git://github.com/eiri/folsomline.git"}}
+  {folsomline, "0.1.1", {git, "git://github.com/eiri/folsomline.git"}}
 ]}
 ```
 ### With [erlang.mk](https://github.com/extend/erlang.mk)
 
-Include the following in `Makefile`
+Include the following in your `Makefile`
 
 ```Make
 DEPS = folsomline
 
-dep_folsomline = https://github.com/eiri/folsomline.git master
+dep_folsomline = https://github.com/eiri/folsomline.git 0.1.1
 ```
 
 ## Usage
 
-Start folsomline as `application:start(folsomline)` and just store folsom metrics as usually. Folsomline is running on a background, storing all the the registered metrics every minute (by default).
+Start folsomline as `application:start(folsomline)` and just store folsom metrics as usually. Folsomline is running on a background, storing a snapshot of all the registered folsom's metrics every minute (by default).
 
-To get the history run `folsomline:read().`
+To get a history run `folsomline:read().`
+
+[More detailed example on usage](https://github.com/eiri/folsomline/wiki/How-to-use-folsomline)
 
 ## Configuration
 
-Default storing interval is one minute. Default storage file kept in local _log_ directory as _folsom.db_
+Default storing interval is one minute. Default storage file kept in _/tmp/folsom.db_
 
 Configuration could be changed by specifying parameters _dbfile_ and _interval_ in application's config file under _folsomline_ term, e.g.:
 
 ```erlang
 {folsomline, [
-  {dbfile, "logs/stats.log"},
+  {dbfile, "./logs/stats.log"},
   {interval, 180000}
 ]},
 
@@ -49,11 +51,12 @@ Configuration could be changed by specifying parameters _dbfile_ and _interval_ 
 
 ## Notes
 
-  - Folsomline starts to record the metrics not immediately on a startm but from a first second of a next minute.
-  - Folsomlineis not a complete monitoring solutions by any means. If you need a proper EVM monitoring check out [Folsomite](https://github.com/campanja/folsomite), though I myself haven't tried it.
+  - Folsomline starts to record the metrics not immediately on a start, but from a first second of a next minute.
+  - Folsomline by any means is not a complete monitoring solutions. If you need a proper EVM monitoring on top of folsom check out [Folsomite](https://github.com/campanja/folsomite), though I myself haven't tried it.
 
 ## Changelog
 
+  - 0.1.1 - Example app. Fixes on storage and re-openening of the metrics file.
   - 0.1.0 - Initial naive version.
 
 ## License
